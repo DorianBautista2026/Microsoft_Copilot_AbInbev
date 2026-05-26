@@ -171,8 +171,10 @@
     }
     .wide { grid-column: 1 / -1; }
     .chart {
-      min-height: 280px;
       width: 100%;
+    }
+    #donutChart {
+      min-height: 280px;
     }
     .legend {
       display: flex;
@@ -306,7 +308,7 @@
         <div id="categoryChart" class="chart"></div>
       </article>
       <article class="panel">
-        <h2>Retiros por categoría</h2>
+        <h2>Licencias retiradas por nivel de uso</h2>
         <div id="removalChart" class="chart"></div>
       </article>
       <article class="panel">
@@ -422,16 +424,20 @@
     function renderBars(targetId, items, options = {}) {
       const visible = items.slice(0, options.limit || 8);
       const max = Math.max(...visible.map((item) => item.value), 1);
-      const rowHeight = 34;
-      const height = Math.max(240, visible.length * rowHeight + 34);
+      const rowHeight = options.compact ? 30 : 32;
+      const labelWidth = options.labelWidth || 150;
+      const chartWidth = 760;
+      const barStart = labelWidth + 22;
+      const barMaxWidth = chartWidth - barStart - 70;
+      const height = Math.max(80, visible.length * rowHeight + 28);
       const bars = visible.map((item, i) => {
-        const y = 24 + i * rowHeight;
-        const w = Math.max(4, (item.value / max) * 58);
+        const y = 16 + i * rowHeight;
+        const w = Math.max(8, (item.value / max) * barMaxWidth);
         const label = item.label.length > 24 ? item.label.slice(0, 23) + "..." : item.label;
         return `
           <text x="4" y="${y + 16}" font-size="12" fill="#3c3944">${escapeHtml(label)}</text>
-          <rect x="158" y="${y}" width="${w}%" height="20" rx="3" fill="${colors[i % colors.length]}"></rect>
-          <text x="${166 + w}%" y="${y + 15}" font-size="12" fill="#6f6b77">${fmt(item.value)}</text>`;
+          <rect x="${barStart}" y="${y}" width="${w}" height="20" rx="3" fill="${colors[i % colors.length]}"></rect>
+          <text x="${barStart + w + 8}" y="${y + 15}" font-size="12" font-weight="700" fill="#3c3944">${fmt(item.value)}</text>`;
       }).join("");
       el(targetId).innerHTML = `<svg viewBox="0 0 760 ${height}" width="100%" height="${height}" role="img" aria-label="Gráfica de barras">${bars}</svg>`;
     }
@@ -488,9 +494,9 @@
         { label: "Asignadas actuales", value: base.length },
         { label: "Disponibles", value: reportData.retiros.length - reportData.nuevos.length },
       ]);
-      renderBars("categoryChart", countBy(base, "Category"), { limit: 8 });
-      renderBars("removalChart", countBy(retiredFiltered, "Category"), { limit: 8 });
-      renderBars("countryChart", countBy(base, "Country"), { limit: 10 });
+      renderBars("categoryChart", countBy(base, "Category"), { limit: 8, compact: true });
+      renderBars("removalChart", countBy(retiredFiltered, "Category"), { limit: 8, compact: true });
+      renderBars("countryChart", countBy(base, "Country"), { limit: 10, compact: true });
       renderTables(base, retiredFiltered);
     }
 
