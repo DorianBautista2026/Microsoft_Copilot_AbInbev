@@ -132,7 +132,7 @@
     }
     .kpis {
       display: grid;
-      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      grid-template-columns: repeat(7, minmax(120px, 1fr));
       gap: 12px;
       margin-bottom: 18px;
     }
@@ -352,6 +352,7 @@
       <article class="kpi"><span>Recién agregados</span><strong id="kpiNew">0</strong></article>
       <article class="kpi"><span>Licencias asignadas</span><strong id="kpiAssigned">0</strong></article>
       <article class="kpi"><span>Usuarios en adopción</span><strong id="kpiCurrent">0</strong></article>
+      <article class="kpi"><span>Interacciones 0</span><strong id="kpiZeroInteractions">0</strong></article>
       <article class="kpi available"><span>Disponibles</span><strong id="kpiAvailable">0</strong></article>
     </section>
 
@@ -568,6 +569,7 @@
       el("kpiNew").textContent = fmt(reportData.nuevos.length);
       el("kpiAssigned").textContent = fmt(assignedLicenses);
       el("kpiCurrent").textContent = fmt(base.length);
+      el("kpiZeroInteractions").textContent = fmt(base.filter((r) => Number(r.Interactions || 0) === 0).length);
       el("kpiAvailable").textContent = fmt(availableRetirements);
 
       const beforeTotal = reportData.pull.length;
