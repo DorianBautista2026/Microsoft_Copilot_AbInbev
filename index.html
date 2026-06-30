@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard de Licenciamiento Copilot - Q2 2026</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjM2MzOTQ0Ii8+Cjx0ZXh0IHg9IjMyIiB5PSI0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNlN2JmNGYiPiM8L3RleHQ+Cjwvc3ZnPg==">
+  <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjM2MzOTQ0Ii8+Cjx0ZXh0IHg9IjMyIiB5PSI0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNlN2JmNGYiPiM8L3RleHQ+Cjwvc3ZnPg==">
   <style>
     :root {
       --ink: #3c3944;
@@ -68,7 +70,7 @@
       <div>
         <div class="brand"><strong>#</strong><span>brew<span class="tech">tech</span></span></div>
         <h1>Dashboard de Licenciamiento Copilot - Q2 2026</h1>
-        <p class="subtitle">Asignación desde exportGroupMembers_2026-6-30.csv comparada contra Global data (11).xlsx. Corte 30 Jun</p>
+        <p class="subtitle">Actualización diaria al 30 Jun 2026 vs día vencido.</p>
       </div>
     </div>
   </header>
@@ -83,8 +85,8 @@
         <select id="tableFilter">
           <option value="Todas">Todas</option>
           <option value="Movimientos">Movimientos</option>
-          <option value="Solo grupo">Solo grupo asignación</option>
-          <option value="Solo Global">Solo Global</option>
+          <option value="Solo grupo">Asignados sin registro Global</option>
+          <option value="Solo Global">Global fuera del grupo</option>
         </select>
       </div>
       <div class="filter">
@@ -100,11 +102,11 @@
       <article class="kpi"><span>Capacidad base</span><strong>320</strong></article>
       <article class="kpi good"><span>Grupo asignado</span><strong>310</strong></article>
       <article class="kpi"><span>No asignadas</span><strong>10</strong></article>
-      <article class="kpi warn"><span>Coincidencias correo</span><strong>0</strong></article>
-      <article class="kpi warn"><span>Coincidencias nombre</span><strong>0</strong></article>
+      <article class="kpi warn"><span>Validados por correo</span><strong>0</strong></article>
+      <article class="kpi warn"><span>Validados por nombre</span><strong>0</strong></article>
       <article class="kpi"><span>Usuarios Global</span><strong>211</strong></article>
-      <article class="kpi warn"><span>Solo grupo</span><strong>310</strong></article>
-      <article class="kpi warn"><span>Solo Global</span><strong>211</strong></article>
+      <article class="kpi warn"><span>Asignados sin registro Global</span><strong>310</strong></article>
+      <article class="kpi warn"><span>Global fuera del grupo</span><strong>211</strong></article>
       <article class="kpi"><span>Agregados vs anterior</span><strong>0</strong></article>
       <article class="kpi"><span>Retirados vs anterior</span><strong>3</strong></article>
     </section>
@@ -115,20 +117,20 @@
         <p class="meta">Capacidad: 223 Partners + 28 Data and Analytics + 35 M365Copilot_Trial_Q3_2025 + 34 To cover Trial Viral Copilot.</p>
       </article>
       <article class="panel">
-        <h2>Detalle Grupo vs Global</h2>
+        <h2>Conciliación entre fuentes</h2>
         <div id="compareBars"></div>
-        <p class="meta">Cruce principal por local-part de correo; validación secundaria por nombre normalizado.</p>
+        <p class="meta">Mide qué usuarios del grupo actual pueden validarse contra Global y qué registros quedan fuera de esa conciliación.</p>
       </article>
       <article id="movementPanel" class="panel wide">
         <h2>Movimientos vs index anterior</h2>
         <div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Nombre</th><th>Email</th><th>Comentario</th></tr></thead><tbody id="movementTable"></tbody></table></div>
       </article>
       <article id="onlyGroupPanel" class="panel wide">
-        <h2>Solo en grupo de asignación</h2>
+        <h2>Asignados sin registro en Global</h2>
         <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Email</th><th>UPN</th></tr></thead><tbody id="onlyGroupTable"></tbody></table></div>
       </article>
       <article id="onlyGlobalPanel" class="panel wide">
-        <h2>Solo en Global data (11)</h2>
+        <h2>Registros Global fuera del grupo actual</h2>
         <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Email</th><th>Interacciones</th><th>Última actividad</th><th>Copilot License</th></tr></thead><tbody id="onlyGlobalTable"></tbody></table></div>
       </article>
     </section>
@@ -155,10 +157,10 @@
       {label:"No asignadas", value:reportData.metrics.available},
     ], reportData.capacity);
     barRows("compareBars", [
-      {label:"Coincidencias correo", value:reportData.metrics.emailOverlap, kind:"green"},
-      {label:"Coincidencias nombre", value:reportData.metrics.nameOverlap, kind:"green"},
-      {label:"Solo grupo", value:reportData.metrics.onlyGroup, kind:"red"},
-      {label:"Solo Global", value:reportData.metrics.onlyGlobal, kind:"red"},
+      {label:"Validados por correo", value:reportData.metrics.emailOverlap, kind:"green"},
+      {label:"Validados por nombre", value:reportData.metrics.nameOverlap, kind:"green"},
+      {label:"Asignados sin registro Global", value:reportData.metrics.onlyGroup, kind:"red"},
+      {label:"Global fuera del grupo", value:reportData.metrics.onlyGlobal, kind:"red"},
     ]);
     function renderTables() {
       const showMovements = state.table === "Todas" || state.table === "Movimientos";
