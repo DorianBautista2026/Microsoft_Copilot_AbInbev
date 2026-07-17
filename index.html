@@ -471,16 +471,6 @@
           </table>
         </div>
       </article>
-      <article class="panel wide">
-        <h2>Licencias agregadas sobre capacidad base 320</h2>
-        <p class="source-note">Conciliación desde AuditLog: 315 iniciales + 37 altas - 23 retiros = 329 miembros. Contra capacidad final 320, quedan 9 licencias sobre capacidad. Hackaton se presenta en un apartado independiente.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>Fecha movimiento</th><th>Usuario</th><th>Email</th><th>UPN</th><th>Antes</th><th>Después</th><th>Ejecutado por</th></tr></thead>
-            <tbody id="overCapacityTable"></tbody>
-          </table>
-        </div>
-      </article>
       <article class="panel">
         <h2>Top 5 Premium por interacciones</h2>
         <p class="source-note">Cruce de usuarios Premium contra la base actual del dashboard.</p>
@@ -750,18 +740,6 @@
           <td>${escapeHtml(r.Comentarios)}</td>
           <td>${escapeHtml(properName(r["Relacionado con"]))}</td>
           <td>${escapeHtml(lowerEmail(r["Email relacionado"]))}</td>
-        </tr>`).join("");
-
-      el("overCapacityTable").innerHTML = reportData.overCapacityUsers.map((r, index) => `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${escapeHtml(r["Fecha MX"])}</td>
-          <td>${escapeHtml(properName(r.Nombre))}</td>
-          <td>${escapeHtml(lowerEmail(r.Email))}</td>
-          <td>${escapeHtml(lowerEmail(r.UPN))}</td>
-          <td>${fmt(Number(r.Antes || 0))}</td>
-          <td>${fmt(Number(r.Despues || 0))}</td>
-          <td>${escapeHtml(lowerEmail(r["Ejecutado por"]))}</td>
         </tr>`).join("");
 
       el("premiumTopTable").innerHTML = reportData.premiumTop5.map((r) => `
