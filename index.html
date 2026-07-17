@@ -135,7 +135,7 @@
     }
     .kpis {
       display: grid;
-      grid-template-columns: repeat(8, minmax(115px, 1fr));
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
       gap: 12px;
       margin-bottom: 18px;
     }
@@ -245,6 +245,16 @@
       margin: 10px 0 0;
       color: var(--muted);
       font-size: 12px;
+    }
+    .executive-note {
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--charcoal);
+      background: #fff;
+      font-size: 15px;
+      line-height: 1.5;
     }
     .source-note {
       margin: -4px 0 12px;
@@ -406,26 +416,15 @@
 
     <section class="kpis" aria-label="Indicadores principales">
       <article class="kpi"><span>Capacidad base</span><strong id="kpiPull">0</strong></article>
-      <article class="kpi"><span>Miembros actuales</span><strong id="kpiAssigned">0</strong></article>
-      <article class="kpi"><span>Activas GBL</span><strong id="kpiGblActive">0</strong></article>
-      <article class="kpi"><span>Asignadas no activas</span><strong id="kpiAssignedNotActive">0</strong></article>
-      <article class="kpi available"><span>No asignadas</span><strong id="kpiAvailable">0</strong></article>
+      <article class="kpi"><span>Asignadas actuales</span><strong id="kpiAssigned">0</strong></article>
       <article class="kpi over"><span>Sobre capacidad</span><strong id="kpiOverCapacity">0</strong></article>
-      <article class="kpi"><span>Ceros recuperables</span><strong id="kpiZeroRecoverable">0</strong></article>
-      <article class="kpi available"><span>Disponibles al recuperar</span><strong id="kpiProjectedAvailable">0</strong></article>
-      <article class="kpi"><span>Vista filtrada</span><strong id="kpiCurrent">0</strong></article>
-      <article class="kpi"><span>Interacciones 0</span><strong id="kpiZeroInteractions">0</strong></article>
-      <article class="kpi"><span>Retiros acumulados</span><strong id="kpiRemoved">0</strong></article>
+      <article class="kpi"><span>Recuperables sin uso</span><strong id="kpiZeroRecoverable">0</strong></article>
+      <article class="kpi available"><span>Disponibles post-retiro</span><strong id="kpiProjectedAvailable">0</strong></article>
     </section>
 
-    <section class="panel before-after" aria-label="Comparativo antes y despues">
-      <h2>Conciliación de licencias</h2>
-      <div class="ba-grid">
-        <article class="ba-card"><span>Capacidad</span><strong id="baBefore">0</strong><p class="ba-note">Pull histórico/base</p></article>
-        <article class="ba-card"><span>Activas GBL</span><strong id="baMovement">0</strong><p class="ba-note" id="baMovementNote"></p></article>
-        <article class="ba-card"><span>Brechas</span><strong id="baAfter">0</strong><p class="ba-note">Asignadas no activas + sobre capacidad</p></article>
-      </div>
-      <p class="ba-note" id="baReconcile"></p>
+    <section class="panel before-after" aria-label="Resumen ejecutivo de licencias">
+      <h2>Resumen ejecutivo de licencias</h2>
+      <p class="executive-note" id="baReconcile"></p>
     </section>
 
     <section class="grid">
@@ -846,7 +845,6 @@
     function render() {
       const base = filteredBase();
       const retiredFiltered = filteredRemovals();
-      const assignedRetirements = reportData.retiros.filter((r) => r["Asignada a"]).length;
       const capacity = Number(reportData.capacityBase || reportData.pull.length);
       const assignedLicenses = Number(reportData.assignedLicensesCount || reportData.base.length);
       const gblActive = Number(reportData.gblMetrics.find((r) => r.Metrica === "GBL MAZ activas")?.Valor || reportData.gblActive.length || 0);
@@ -858,23 +856,12 @@
       const projectedAvailable = Math.max(capacity - projectedAssigned, 0);
 
       el("kpiPull").textContent = fmt(capacity);
-      el("kpiRemoved").textContent = fmt(retiredFiltered.length);
       el("kpiAssigned").textContent = fmt(assignedLicenses);
-      el("kpiGblActive").textContent = fmt(gblActive);
-      el("kpiAssignedNotActive").textContent = fmt(assignedNotActive);
-      el("kpiCurrent").textContent = fmt(base.length);
-      el("kpiZeroInteractions").textContent = fmt(base.filter((r) => Number(r.Interactions || 0) === 0).length);
-      el("kpiAvailable").textContent = fmt(availableLicenses);
       el("kpiOverCapacity").textContent = fmt(overCapacity);
       el("kpiZeroRecoverable").textContent = fmt(zeroRecoverableCount);
       el("kpiProjectedAvailable").textContent = fmt(projectedAvailable);
 
-      const beforeTotal = capacity;
-      el("baBefore").textContent = fmt(beforeTotal);
-      el("baMovement").textContent = fmt(gblActive);
-      el("baAfter").textContent = fmt(assignedNotActive + overCapacity);
-      el("baMovementNote").textContent = `${fmt(gblActive)} licencias activas en GBL`;
-      el("baReconcile").textContent = `${fmt(beforeTotal)} capacidad base final. Estado actual: ${fmt(assignedLicenses)} miembros = ${fmt(gblActive)} activas GBL + ${fmt(assignedNotActive)} asignadas no activas; ${fmt(overCapacity)} licencias quedan sobre capacidad y ${fmt(availableLicenses)} disponibles. Si se recuperan los ${fmt(zeroRecoverableCount)} ceros no recientes, quedarían ${fmt(projectedAssigned)} asignadas y ${fmt(projectedAvailable)} disponibles. Retiros acumulados: ${fmt(reportData.retiros.length)}; usados en reasignacion: ${fmt(assignedRetirements)}.`;
+      el("baReconcile").textContent = `${fmt(assignedLicenses)} licencias asignadas vs ${fmt(capacity)} de capacidad base: excedente de ${fmt(overCapacity)}. Al retirar las ${fmt(zeroRecoverableCount)} licencias sin uso real, quedarían ${fmt(projectedAssigned)} asignadas y ${fmt(projectedAvailable)} disponibles.`;
 
       renderDonut("donutChart", "donutLegend", [
         { label: "Activas GBL", value: gblActive },
